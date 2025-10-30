@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# Factura Chat (Vite + React + Tailwind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend minimalista para generar facturas con lenguaje natural.
 
-Currently, two official plugins are available:
+## Ejecutar localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm install`
+- `npm run dev` → `http://localhost:5173/`
+- Opcional (API mock Express): `npm run server` → `http://localhost:3001/`
 
-## React Compiler
+## Modo demo (MOCK) para Bolt
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Este proyecto puede funcionar sin backend usando un modo demo:
 
-## Expanding the ESLint configuration
+- Crea un archivo `.env` en la raíz con:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+VITE_MOCK_API=true
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Inicia el dev server: `npm run dev`
+- El chat generará una “Factura C de prueba” localmente si el backend no está disponible.
+- Verás en la consola del navegador logs como:
+  - `[InvoiceService] Modo MOCK activo: generando factura localmente`
+  - `Confirming invoice with payload: ...`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usar backend (opcional)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Arranca el servidor: `npm run server` (puerto `3001`)
+- Quita el modo mock: define `VITE_MOCK_API=false` (o elimina la variable del `.env`)
+- El frontend llamará a los endpoints:
+  - `POST /api/generate-invoice`
+  - `GET /api/health`
+
+## Scripts
+
+- `dev`: corre Vite con React y Tailwind.
+- `server`: Express para endpoints simulados.
+- `build` / `preview`: build y previsualización del frontend.
+
+## Notas
+
+- No se requiere MCP ni certificados para el modo demo.
+- En producción, conecta con tu backend y elimina `VITE_MOCK_API`.

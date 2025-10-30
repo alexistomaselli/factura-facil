@@ -143,19 +143,12 @@ const InvoiceChat: React.FC = () => {
     setChatState(prev => ({ ...prev, conversationStage: 'generating', isProcessing: true }));
     
     try {
-      // Verificar conexión antes de proceder
+      // Si el servidor no está disponible, informar pero continuar en modo demo
       if (serverConnected === false) {
         addMessage(
-          '❌ No se puede generar la factura. El servidor no está disponible.',
+          'ℹ️ El servidor no está disponible. Continuaré en modo demo (MOCK).',
           'assistant'
         );
-        setChatState(prev => ({ 
-          ...prev, 
-          conversationStage: 'initial',
-          isProcessing: false,
-          currentInvoiceData: {},
-        }));
-        return;
       }
 
       addMessage('🔄 Generando factura en AFIP...', 'assistant');
