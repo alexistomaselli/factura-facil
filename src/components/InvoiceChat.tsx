@@ -224,37 +224,35 @@ const InvoiceChat: React.FC = () => {
     <div className="flex flex-col h-screen bg-[#212121] text-white">
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4">
-        <div className="max-w-3xl mx-auto py-8">
+      <div className="flex-1 overflow-y-auto px-4 flex items-center justify-center">
+        <div className="max-w-3xl w-full">
           {chatState.messages.length === 0 && !chatState.isProcessing ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
-              <div className="text-center space-y-6">
-                <h1 className="text-4xl font-semibold text-white">Modo de desarrollador</h1>
-                <p className="text-gray-400 text-base">
-                  No se utiliza la memoria para este chat.{' '}
-                  <button className="text-gray-400 underline hover:text-gray-300">Configuración</button>
-                </p>
-              </div>
+            <div className="flex flex-col items-center justify-center text-center space-y-6 pb-32">
+              <h1 className="text-4xl font-semibold text-white">Factura Fácil</h1>
+              <p className="text-gray-400 text-base">
+                Emití facturas con lenguaje natural.{' '}
+                <button className="text-gray-400 underline hover:text-gray-300 transition-colors">Configuración</button>
+              </p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8 py-8">
               {chatState.messages.map((message) => (
                 <div key={message.id} className="group">
-                  <div className={`flex gap-4 ${
+                  <div className={`flex gap-4 items-start ${
                     message.type === 'user' ? 'justify-end' : 'justify-start'
                   }`}>
                     {message.type === 'assistant' && (
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                         AI
                       </div>
                     )}
-                    <div className={`flex-1 max-w-3xl ${
+                    <div className={`flex-1 max-w-2xl ${
                       message.type === 'user' ? 'text-right' : ''
                     }`}>
-                      <div className={`inline-block text-left px-0 py-2 rounded-lg text-[15px] leading-7 ${
+                      <div className={`inline-block text-left rounded-2xl text-[15px] leading-7 ${
                         message.type === 'user'
-                          ? 'bg-[#2f2f2f] text-white px-4'
-                          : 'text-gray-100'
+                          ? 'bg-[#2f2f2f] text-white px-4 py-3'
+                          : 'text-white px-1 py-2'
                       }`}>
                         <div className="whitespace-pre-wrap">{message.content}</div>
                       </div>
@@ -272,13 +270,13 @@ const InvoiceChat: React.FC = () => {
 
               {chatState.isProcessing && (
                 <div className="group">
-                  <div className="flex gap-4 justify-start">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                  <div className="flex gap-4 items-start justify-start">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                       AI
                     </div>
-                    <div className="flex-1 max-w-3xl">
+                    <div className="flex-1 max-w-2xl">
                       <div className="inline-block text-left py-2 text-[15px]">
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
@@ -291,12 +289,12 @@ const InvoiceChat: React.FC = () => {
 
               {lastInvoiceResult && lastInvoiceResult.success && lastInvoiceResult.invoice && (
                 <div className="group">
-                  <div className="flex gap-4 justify-start">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                  <div className="flex gap-4 items-start justify-start">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                       AI
                     </div>
-                    <div className="flex-1 max-w-3xl">
-                      <div className="bg-[#2f2f2f] border border-gray-700 rounded-xl p-5 shadow-xl">
+                    <div className="flex-1 max-w-2xl">
+                      <div className="bg-[#2f2f2f] border border-gray-700 rounded-2xl p-6 shadow-xl">
                         <div className="flex items-center gap-2 mb-4">
                           <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
                           <h3 className="text-base font-semibold text-white">Resumen de Factura</h3>
@@ -314,7 +312,7 @@ const InvoiceChat: React.FC = () => {
                             <span className="text-gray-400">Fecha:</span>
                             <span className="font-medium text-white">{lastInvoiceResult.invoice.fecha}</span>
                           </div>
-                          <div className="border-t border-gray-700 pt-3">
+                          <div className="border-t border-gray-700 pt-3 mt-2">
                             <div className="flex justify-between items-center py-1">
                               <span className="text-gray-400">Cliente:</span>
                               <span className="font-medium text-white">{lastInvoiceResult.invoice.cliente.nombre}</span>
@@ -324,25 +322,25 @@ const InvoiceChat: React.FC = () => {
                               <span className="font-medium text-white">{lastInvoiceResult.invoice.cliente.tipoDocumento} {lastInvoiceResult.invoice.cliente.documento}</span>
                             </div>
                           </div>
-                          <div className="border-t border-gray-700 pt-3">
+                          <div className="border-t border-gray-700 pt-3 mt-2">
                             <div className="flex justify-between items-center py-1">
                               <span className="text-gray-400">Importe:</span>
                               <span className="font-bold text-emerald-400 text-lg">${lastInvoiceResult.invoice.importe.toLocaleString('es-AR')}</span>
                             </div>
                           </div>
-                          <div className="border-t border-gray-700 pt-3 text-xs space-y-2">
+                          <div className="border-t border-gray-700 pt-3 mt-2 text-xs space-y-2">
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-500">CAE:</span>
-                              <span className="font-mono text-gray-300">{lastInvoiceResult.invoice.cae}</span>
+                              <span className="text-gray-400">CAE:</span>
+                              <span className="font-mono text-white">{lastInvoiceResult.invoice.cae}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-500">Vencimiento:</span>
-                              <span className="text-gray-300">{lastInvoiceResult.invoice.vencimientoCae}</span>
+                              <span className="text-gray-400">Vencimiento:</span>
+                              <span className="text-white">{lastInvoiceResult.invoice.vencimientoCae}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-gray-700">
+                        <div className="mt-5 pt-4 border-t border-gray-700">
                           <button
                             onClick={handleCopyInvoice}
                             className="w-full flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 px-4 py-2.5 rounded-lg transition-colors text-sm font-medium"
@@ -372,14 +370,14 @@ const InvoiceChat: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="pb-8 px-4">
+      <div className="pb-10 px-4">
         <div className="max-w-3xl mx-auto">
-          <div className="relative bg-[#2f2f2f] rounded-3xl shadow-2xl border border-gray-700">
-            <div className="flex items-center gap-3 p-4">
+          <div className="relative bg-[#2f2f2f] rounded-[26px] shadow-2xl border-2 border-[#424242] hover:border-gray-600 transition-colors">
+            <div className="flex items-center gap-3 px-4 py-3">
               <button
                 onClick={handleClearChat}
                 disabled={chatState.isProcessing}
-                className="flex-shrink-0 w-8 h-8 rounded-lg bg-transparent hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center text-gray-400 hover:text-white"
+                className="flex-shrink-0 w-9 h-9 rounded-xl bg-transparent hover:bg-[#424242] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center text-gray-400 hover:text-white"
                 title="Nueva conversación"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,7 +391,7 @@ const InvoiceChat: React.FC = () => {
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={handleKeyPress}
                   placeholder={chatState.conversationStage === 'confirming' ? "Escribí 'sí' o 'confirmo' para continuar" : "Pregunta lo que quieras"}
-                  className="w-full resize-none bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-[15px] leading-6 max-h-48"
+                  className="w-full resize-none bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-[16px] leading-6 max-h-48"
                   rows={1}
                   disabled={chatState.isProcessing}
                   style={{
@@ -406,25 +404,25 @@ const InvoiceChat: React.FC = () => {
               <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || chatState.isProcessing}
-                className="flex-shrink-0 w-8 h-8 rounded-lg bg-white disabled:bg-gray-600 disabled:cursor-not-allowed transition-all flex items-center justify-center text-black hover:opacity-80"
+                className="flex-shrink-0 w-9 h-9 rounded-xl bg-white disabled:bg-gray-700 disabled:cursor-not-allowed transition-all flex items-center justify-center text-black hover:opacity-80"
               >
-                <PaperAirplaneIcon className="w-4 h-4" />
+                <PaperAirplaneIcon className="w-5 h-5" />
               </button>
             </div>
           </div>
 
           {serverConnected !== null && (
-            <div className="mt-3 text-center">
+            <div className="mt-4 text-center">
               <div className="inline-flex items-center gap-2 text-xs text-gray-500">
                 {serverConnected ? (
                   <>
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                    <span>Conectado a AFIP</span>
+                    <span className="text-gray-400">Conectado a AFIP</span>
                   </>
                 ) : (
                   <>
                     <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
-                    <span>Modo demo - Sin conexión a AFIP</span>
+                    <span className="text-gray-400">Modo demo - Sin conexión a AFIP</span>
                   </>
                 )}
               </div>
