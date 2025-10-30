@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   PaperAirplaneIcon,
-  DocumentTextIcon,
   CheckCircleIcon,
   DocumentDuplicateIcon,
   ClipboardDocumentCheckIcon
@@ -13,14 +12,7 @@ import { InvoiceService, type InvoiceResult } from '../services/invoiceService';
 
 const InvoiceChat: React.FC = () => {
   const [chatState, setChatState] = useState<ChatState>({
-    messages: [
-      {
-        id: '1',
-        type: 'assistant',
-        content: 'Hola, decime qué querés facturar y a quién. Por ejemplo: "Factura C de prueba por $1000 para Juan Pérez"',
-        timestamp: new Date(),
-      }
-    ],
+    messages: [],
     isProcessing: false,
     currentInvoiceData: {},
     conversationStage: 'initial',
@@ -207,14 +199,7 @@ const InvoiceChat: React.FC = () => {
 
   const handleClearChat = () => {
     setChatState({
-      messages: [
-        {
-          id: '1',
-          type: 'assistant',
-          content: 'Hola, decime qué querés facturar y a quién. Por ejemplo: "Factura C de prueba por $1000 para Juan Pérez"',
-          timestamp: new Date(),
-        }
-      ],
+      messages: [],
       isProcessing: false,
       currentInvoiceData: {},
       conversationStage: 'initial',
@@ -236,221 +221,215 @@ const InvoiceChat: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 shadow-md">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-white bg-opacity-20 p-2 rounded-xl">
-              <DocumentTextIcon className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">
-                Factura Fácil
-              </h1>
-              <p className="text-sm text-blue-100">
-                Emisión por chat
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {serverConnected === null ? (
-              <div className="flex items-center gap-2 bg-white bg-opacity-20 px-3 py-1.5 rounded-lg">
-                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-xs text-white font-medium">Conectando...</span>
-              </div>
-            ) : serverConnected ? (
-              <div className="flex items-center gap-2 bg-green-500 bg-opacity-20 px-3 py-1.5 rounded-lg border border-green-300 border-opacity-30">
-                <div className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-white">Online</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 bg-yellow-500 bg-opacity-20 px-3 py-1.5 rounded-lg border border-yellow-300 border-opacity-30">
-                <div className="w-2 h-2 bg-yellow-300 rounded-full"></div>
-                <span className="text-xs font-medium text-white">Demo</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-col h-screen bg-[#212121] text-white">
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-3xl mx-auto space-y-4">
-          {chatState.messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex items-start gap-2.5 max-w-xl ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm ${
-                  message.type === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-blue-600 border-2 border-blue-600'
-                }`}>
-                  {message.type === 'user' ? 'TÚ' : 'AI'}
-                </div>
-
-                <div className={`px-4 py-3 rounded-2xl shadow-sm ${
-                  message.type === 'user'
-                    ? 'bg-blue-600 text-white rounded-tr-none'
-                    : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none'
-                }`}>
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </div>
-
-                  <div className={`text-xs mt-1.5 ${
-                    message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+      <div className="flex-1 overflow-y-auto px-4">
+        <div className="max-w-3xl mx-auto py-8">
+          {chatState.messages.length === 0 && !chatState.isProcessing ? (
+            <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
+              <div className="text-center space-y-6">
+                <h1 className="text-4xl font-semibold text-white">Modo de desarrollador</h1>
+                <p className="text-gray-400 text-base">
+                  No se utiliza la memoria para este chat.{' '}
+                  <button className="text-gray-400 underline hover:text-gray-300">Configuración</button>
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {chatState.messages.map((message) => (
+                <div key={message.id} className="group">
+                  <div className={`flex gap-4 ${
+                    message.type === 'user' ? 'justify-end' : 'justify-start'
                   }`}>
-                    {message.timestamp.toLocaleTimeString('es-AR', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {chatState.isProcessing && (
-            <div className="flex justify-start">
-              <div className="flex items-start gap-2.5 max-w-xl">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white text-blue-600 border-2 border-blue-600 flex items-center justify-center text-xs font-bold shadow-sm">
-                  AI
-                </div>
-                <div className="bg-white px-4 py-3 rounded-2xl shadow-sm border border-gray-200 rounded-tl-none">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {lastInvoiceResult && lastInvoiceResult.success && lastInvoiceResult.invoice && (
-            <div className="flex justify-center">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl shadow-md p-5 max-w-lg w-full">
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircleIcon className="w-6 h-6 text-green-600" />
-                  <h3 className="text-base font-bold text-green-900">Resumen de Factura</h3>
-                  {serverConnected === false && (
-                    <span className="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">Demo</span>
-                  )}
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Número:</span>
-                    <span className="font-semibold text-gray-900">{lastInvoiceResult.invoice.numero}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Fecha:</span>
-                    <span className="font-semibold text-gray-900">{lastInvoiceResult.invoice.fecha}</span>
-                  </div>
-                  <div className="border-t border-green-200 pt-2 mt-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Cliente:</span>
-                      <span className="font-semibold text-gray-900">{lastInvoiceResult.invoice.cliente.nombre}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Documento:</span>
-                      <span className="font-semibold text-gray-900">{lastInvoiceResult.invoice.cliente.tipoDocumento} {lastInvoiceResult.invoice.cliente.documento}</span>
-                    </div>
-                  </div>
-                  <div className="border-t border-green-200 pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Importe:</span>
-                      <span className="font-bold text-green-700 text-lg">${lastInvoiceResult.invoice.importe.toLocaleString('es-AR')}</span>
-                    </div>
-                  </div>
-                  <div className="border-t border-green-200 pt-2 mt-2 text-xs text-gray-500">
-                    <div className="flex justify-between">
-                      <span>CAE:</span>
-                      <span className="font-mono">{lastInvoiceResult.invoice.cae}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Vencimiento:</span>
-                      <span>{lastInvoiceResult.invoice.vencimientoCae}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 mt-4">
-                  <button
-                    onClick={handleCopyInvoice}
-                    className="flex-1 flex items-center justify-center gap-2 bg-white border border-green-300 text-green-700 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors text-sm font-medium shadow-sm"
-                  >
-                    {copiedToClipboard ? (
-                      <>
-                        <ClipboardDocumentCheckIcon className="w-4 h-4" />
-                        Copiado
-                      </>
-                    ) : (
-                      <>
-                        <DocumentDuplicateIcon className="w-4 h-4" />
-                        Copiar
-                      </>
+                    {message.type === 'assistant' && (
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                        AI
+                      </div>
                     )}
-                  </button>
+                    <div className={`flex-1 max-w-3xl ${
+                      message.type === 'user' ? 'text-right' : ''
+                    }`}>
+                      <div className={`inline-block text-left px-0 py-2 rounded-lg text-[15px] leading-7 ${
+                        message.type === 'user'
+                          ? 'bg-[#2f2f2f] text-white px-4'
+                          : 'text-gray-100'
+                      }`}>
+                        <div className="whitespace-pre-wrap">{message.content}</div>
+                      </div>
+                    </div>
+                    {message.type === 'user' && (
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white flex items-center justify-center text-sm font-bold text-gray-900">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ))}
+
+              {chatState.isProcessing && (
+                <div className="group">
+                  <div className="flex gap-4 justify-start">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                      AI
+                    </div>
+                    <div className="flex-1 max-w-3xl">
+                      <div className="inline-block text-left py-2 text-[15px]">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {lastInvoiceResult && lastInvoiceResult.success && lastInvoiceResult.invoice && (
+                <div className="group">
+                  <div className="flex gap-4 justify-start">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                      AI
+                    </div>
+                    <div className="flex-1 max-w-3xl">
+                      <div className="bg-[#2f2f2f] border border-gray-700 rounded-xl p-5 shadow-xl">
+                        <div className="flex items-center gap-2 mb-4">
+                          <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
+                          <h3 className="text-base font-semibold text-white">Resumen de Factura</h3>
+                          {serverConnected === false && (
+                            <span className="ml-auto text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full font-medium border border-amber-500/30">Demo</span>
+                          )}
+                        </div>
+
+                        <div className="space-y-3 text-sm">
+                          <div className="flex justify-between items-center py-1">
+                            <span className="text-gray-400">Número:</span>
+                            <span className="font-medium text-white">{lastInvoiceResult.invoice.numero}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-1">
+                            <span className="text-gray-400">Fecha:</span>
+                            <span className="font-medium text-white">{lastInvoiceResult.invoice.fecha}</span>
+                          </div>
+                          <div className="border-t border-gray-700 pt-3">
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-gray-400">Cliente:</span>
+                              <span className="font-medium text-white">{lastInvoiceResult.invoice.cliente.nombre}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-gray-400">Documento:</span>
+                              <span className="font-medium text-white">{lastInvoiceResult.invoice.cliente.tipoDocumento} {lastInvoiceResult.invoice.cliente.documento}</span>
+                            </div>
+                          </div>
+                          <div className="border-t border-gray-700 pt-3">
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-gray-400">Importe:</span>
+                              <span className="font-bold text-emerald-400 text-lg">${lastInvoiceResult.invoice.importe.toLocaleString('es-AR')}</span>
+                            </div>
+                          </div>
+                          <div className="border-t border-gray-700 pt-3 text-xs space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-500">CAE:</span>
+                              <span className="font-mono text-gray-300">{lastInvoiceResult.invoice.cae}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-500">Vencimiento:</span>
+                              <span className="text-gray-300">{lastInvoiceResult.invoice.vencimientoCae}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                          <button
+                            onClick={handleCopyInvoice}
+                            className="w-full flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 px-4 py-2.5 rounded-lg transition-colors text-sm font-medium"
+                          >
+                            {copiedToClipboard ? (
+                              <>
+                                <ClipboardDocumentCheckIcon className="w-4 h-4" />
+                                Copiado al portapapeles
+                              </>
+                            ) : (
+                              <>
+                                <DocumentDuplicateIcon className="w-4 h-4" />
+                                Copiar resumen
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
-
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
+      {/* Input Area */}
+      <div className="pb-8 px-4">
         <div className="max-w-3xl mx-auto">
-          <div className="flex gap-2 items-end">
-            <div className="flex-1 relative">
-              <textarea
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder={chatState.conversationStage === 'confirming' ? "Escribí 'sí' o 'confirmo' para continuar" : "Ejemplo: 'Factura C de prueba por $1000 para Juan Pérez'"}
-                className="w-full resize-none border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-900 placeholder-gray-400 bg-white"
-                rows={1}
+          <div className="relative bg-[#2f2f2f] rounded-3xl shadow-2xl border border-gray-700">
+            <div className="flex items-center gap-3 p-4">
+              <button
+                onClick={handleClearChat}
                 disabled={chatState.isProcessing}
-              />
+                className="flex-shrink-0 w-8 h-8 rounded-lg bg-transparent hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center text-gray-400 hover:text-white"
+                title="Nueva conversación"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+
+              <div className="flex-1 relative">
+                <textarea
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder={chatState.conversationStage === 'confirming' ? "Escribí 'sí' o 'confirmo' para continuar" : "Pregunta lo que quieras"}
+                  className="w-full resize-none bg-transparent border-none focus:outline-none text-white placeholder-gray-500 text-[15px] leading-6 max-h-48"
+                  rows={1}
+                  disabled={chatState.isProcessing}
+                  style={{
+                    minHeight: '24px',
+                    height: 'auto',
+                  }}
+                />
+              </div>
+
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputMessage.trim() || chatState.isProcessing}
+                className="flex-shrink-0 w-8 h-8 rounded-lg bg-white disabled:bg-gray-600 disabled:cursor-not-allowed transition-all flex items-center justify-center text-black hover:opacity-80"
+              >
+                <PaperAirplaneIcon className="w-4 h-4" />
+              </button>
             </div>
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputMessage.trim() || chatState.isProcessing}
-              className="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg font-medium text-sm flex items-center gap-2"
-            >
-              <PaperAirplaneIcon className="w-4 h-4" />
-              Enviar
-            </button>
-            <button
-              onClick={handleClearChat}
-              disabled={chatState.isProcessing}
-              className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-gray-300 font-medium text-sm"
-            >
-              Limpiar
-            </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-gray-500 font-medium">Prueba:</span>
-            <button
-              onClick={() => setInputMessage("Factura C de prueba por $1000")}
-              className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 font-medium"
-            >
-              Factura C por $1000
-            </button>
-            <button
-              onClick={() => setInputMessage("Factura B para María García DNI 30123456 por $25000")}
-              className="text-xs bg-teal-50 text-teal-700 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors border border-teal-200 font-medium"
-            >
-              Factura B con cliente
-            </button>
-          </div>
+          {serverConnected !== null && (
+            <div className="mt-3 text-center">
+              <div className="inline-flex items-center gap-2 text-xs text-gray-500">
+                {serverConnected ? (
+                  <>
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span>Conectado a AFIP</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                    <span>Modo demo - Sin conexión a AFIP</span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
