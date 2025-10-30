@@ -227,7 +227,7 @@ const InvoiceChat: React.FC = () => {
       <div className="flex-1 overflow-y-auto px-4 flex items-center justify-center">
         <div className="max-w-3xl w-full">
           {chatState.messages.length === 0 && !chatState.isProcessing ? (
-            <div className="flex flex-col items-center justify-center text-center space-y-6 pb-32">
+            <div className="flex flex-col items-center justify-center text-center space-y-8 -mt-32">
               <h1 className="text-4xl font-semibold text-white">Factura Fácil</h1>
               <p className="text-white text-base">
                 Emití facturas con lenguaje natural.{' '}
@@ -370,7 +370,7 @@ const InvoiceChat: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="pb-10 px-4">
+      <div className="pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="relative bg-[#2f2f2f] rounded-[26px] shadow-2xl border-2 border-[#424242] hover:border-gray-600 transition-colors">
             <div className="flex items-center gap-3 px-4 py-3">
